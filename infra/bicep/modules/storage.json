@@ -1,0 +1,105 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "4637908708099680121"
+    }
+  },
+  "parameters": {
+    "namePrefix": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "object"
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Standard_ZRS",
+        "Premium_LRS",
+        "Premium_ZRS"
+      ]
+    },
+    "containers": {
+      "type": "array",
+      "defaultValue": [
+        "raw",
+        "curated",
+        "sandbox"
+      ]
+    },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "",
+      "maxLength": 24,
+      "metadata": {
+        "description": "Optional Storage account name override (must be globally unique, 3-24 lowercase alphanumeric characters only)."
+      }
+    }
+  },
+  "variables": {
+    "computedStorageAccountName": "[toLower(format('st{0}{1}', take(replace(replace(parameters('namePrefix'), '-', ''), '_', ''), 8), take(uniqueString(resourceGroup().id, parameters('namePrefix')), 13)))]",
+    "effectiveStorageAccountName": "[if(not(equals(parameters('storageAccountName'), '')), toLower(parameters('storageAccountName')), variables('computedStorageAccountName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('effectiveStorageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('skuName')]"
+      },
+      "kind": "StorageV2",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "minimumTlsVersion": "TLS1_2",
+        "allowBlobPublicAccess": false,
+        "supportsHttpsTrafficOnly": true
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', variables('effectiveStorageAccountName'), 'default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('effectiveStorageAccountName'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "containersRes",
+        "count": "[length(parameters('containers'))]"
+      },
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}/{2}', variables('effectiveStorageAccountName'), 'default', parameters('containers')[copyIndex()])]",
+      "properties": {
+        "publicAccess": "None"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('effectiveStorageAccountName'), 'default')]"
+      ]
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Storage/storageAccounts', variables('effectiveStorageAccountName'))]"
+    },
+    "name": {
+      "type": "string",
+      "value": "[variables('effectiveStorageAccountName')]"
+    }
+  }
+}

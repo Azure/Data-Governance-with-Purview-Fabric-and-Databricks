@@ -1,0 +1,167 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "2695781901380859083"
+    }
+  },
+  "parameters": {
+    "namePrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Base name prefix for resources"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure region for deployment"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Resource tags"
+      }
+    },
+    "namespaceName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Event Hub namespace name override"
+      }
+    },
+    "topicName": {
+      "type": "string",
+      "defaultValue": "data-governance-events",
+      "metadata": {
+        "description": "Event Hub topic name"
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Event Hub SKU"
+      }
+    },
+    "capacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Event Hub capacity (throughput units)"
+      }
+    },
+    "partitionCount": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Event Hub topic partition count"
+      }
+    },
+    "messageRetentionInDays": {
+      "type": "int",
+      "defaultValue": 15,
+      "metadata": {
+        "description": "Event Hub topic message retention in days"
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Environment name for unique resource naming"
+      }
+    }
+  },
+  "variables": {
+    "cleanNamePrefix": "[replace(replace(parameters('namePrefix'), '_', ''), ' ', '')]",
+    "uniqueSuffix": "[take(uniqueString(subscription().id, parameters('location'), parameters('environmentName')), 6)]",
+    "eventHubNamespaceName": "[if(not(empty(parameters('namespaceName'))), parameters('namespaceName'), format('eh{0}{1}', take(variables('cleanNamePrefix'), 8), variables('uniqueSuffix')))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.EventHub/namespaces",
+      "apiVersion": "2024-01-01",
+      "name": "[variables('eventHubNamespaceName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('skuName')]",
+        "capacity": "[parameters('capacity')]"
+      },
+      "properties": {
+        "disableLocalAuth": false,
+        "zoneRedundant": false,
+        "isAutoInflateEnabled": false,
+        "maximumThroughputUnits": 0,
+        "kafkaEnabled": true,
+        "minimumTlsVersion": "1.2",
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/eventhubs",
+      "apiVersion": "2024-01-01",
+      "name": "[format('{0}/{1}', variables('eventHubNamespaceName'), parameters('topicName'))]",
+      "properties": {
+        "messageRetentionInDays": "[parameters('messageRetentionInDays')]",
+        "partitionCount": "[parameters('partitionCount')]",
+        "status": "Active"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/authorizationRules",
+      "apiVersion": "2024-01-01",
+      "name": "[format('{0}/{1}', variables('eventHubNamespaceName'), 'RootManageSharedAccessKey')]",
+      "properties": {
+        "rights": [
+          "Listen",
+          "Manage",
+          "Send"
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName'))]"
+    },
+    "name": {
+      "type": "string",
+      "value": "[variables('eventHubNamespaceName')]"
+    },
+    "namespaceName": {
+      "type": "string",
+      "value": "[variables('eventHubNamespaceName')]"
+    },
+    "topicName": {
+      "type": "string",
+      "value": "[parameters('topicName')]"
+    },
+    "serviceBusEndpoint": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName')), '2024-01-01').serviceBusEndpoint]"
+    },
+    "authRuleName": {
+      "type": "string",
+      "value": "RootManageSharedAccessKey"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "centralus"
+    },
+    "name": {
+      "value": "${AZURE_ENV_NAME}"
+    },
+    "environmentName": {
+      "value": "${AZURE_ENV_NAME}"
+    },
+    "resourceGroupName": {
+      "value": "rg-${AZURE_ENV_NAME}"
+    },
+    "postgresAdminUser": {
+      "value": "${POSTGRES_ADMIN_USER}"
+    },
+    "postgresAdminPassword": {
+      "value": "${POSTGRES_ADMIN_PASSWORD}"
+    },
+    "tagsConfig": {
+      "value": {
+        "environment": "dev",
+        "project": "DataGovernance",
+        "azd-env-name": "${AZURE_ENV_NAME}",
+        "additionalTags": {}
+      }
+    },
+    "resourceNaming": {
+      "value": {
+        "resourceGroupName": "rg-${AZURE_ENV_NAME}"
+      }
+    },
+    "eventHubConfig": {
+      "value": {
+        "skuName": "Standard",
+        "capacity": 1,
+        "topicName": "data-governance-events",
+        "partitionCount": 2,
+        "messageRetentionInDays": 1
+      }
+    }
+  }
+}
