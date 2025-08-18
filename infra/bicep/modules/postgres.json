@@ -1,0 +1,128 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "8366913726895392606"
+    }
+  },
+  "parameters": {
+    "namePrefix": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "object"
+    },
+    "postgresAdminUser": {
+      "type": "string"
+    },
+    "postgresAdminPassword": {
+      "type": "securestring"
+    },
+    "version": {
+      "type": "string",
+      "defaultValue": "16",
+      "allowedValues": [
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16"
+      ]
+    },
+    "storageSizeGB": {
+      "type": "int",
+      "defaultValue": 64
+    },
+    "geoRedundantBackup": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ]
+    },
+    "autoGrow": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ]
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Standard_D2s_v3",
+      "allowedValues": [
+        "Burstable_B1ms",
+        "Standard_D2s_v3",
+        "Standard_D4s_v3"
+      ]
+    },
+    "skuTier": {
+      "type": "string",
+      "defaultValue": "GeneralPurpose",
+      "allowedValues": [
+        "Burstable",
+        "GeneralPurpose",
+        "MemoryOptimized"
+      ]
+    },
+    "serverName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional PostgreSQL flexible server name override."
+      }
+    }
+  },
+  "variables": {
+    "computedPostgresName": "[toLower(format('pg-{0}-{1}', take(replace(parameters('namePrefix'), '-', ''), 8), uniqueString(resourceGroup().id, parameters('namePrefix'))))]",
+    "postgresName": "[if(not(equals(parameters('serverName'), '')), toLower(parameters('serverName')), variables('computedPostgresName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "apiVersion": "2023-06-01-preview",
+      "name": "[variables('postgresName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('skuTier')]"
+      },
+      "properties": {
+        "administratorLogin": "[parameters('postgresAdminUser')]",
+        "administratorLoginPassword": "[parameters('postgresAdminPassword')]",
+        "version": "[parameters('version')]",
+        "storage": {
+          "storageSizeGB": "[parameters('storageSizeGB')]",
+          "autoGrow": "[parameters('autoGrow')]"
+        },
+        "backup": {
+          "backupRetentionDays": 7,
+          "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
+        },
+        "network": {
+          "publicNetworkAccess": "Enabled"
+        }
+      },
+      "tags": "[parameters('tags')]"
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresName'))]"
+    },
+    "name": {
+      "type": "string",
+      "value": "[variables('postgresName')]"
+    }
+  }
+}

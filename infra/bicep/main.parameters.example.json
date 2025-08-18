@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "centralus"
+    },
+    "name": {
+      "value": "datagov"
+    },
+    "postgresAdminUser": {
+      "value": "pgadmin"
+    },
+    "postgresAdminPassword": {
+      "value": "S7rong!Passw0rd"
+    },
+    "fabricAdminUsers": {
+      "value": ["user1@company.com",
+                "user2@company.com",
+                "user3@company.com"
+            ]
+    },
+    "fabricSkuName": {
+      "value": "F2"
+    },
+    "databricksWorkspaceSku": {
+      "value": "standard"
+    },
+    "storageSkuName": {
+      "value": "Standard_LRS"
+    },
+    "postgresSkuName": {
+      "value": "Standard_D2s_v3"
+    },
+    "postgresSkuTier": {
+      "value": "GeneralPurpose"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "10722752823137245627"
+    }
+  },
+  "parameters": {
+    "namePrefix": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "object"
+    },
+    "workspaceSku": {
+      "type": "string",
+      "defaultValue": "standard",
+      "allowedValues": [
+        "standard",
+        "premium",
+        "trial"
+      ]
+    },
+    "enableNoPublicIp": {
+      "type": "bool",
+      "defaultValue": true
+    },
+    "managedResourceGroupName": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "workspaceName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Databricks workspace name override."
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Environment name for unique resource naming"
+      }
+    }
+  },
+  "variables": {
+    "cleanNamePrefix": "[replace(replace(parameters('namePrefix'), '-', ''), '_', '')]",
+    "uniqueSuffix": "[take(uniqueString(subscription().id, parameters('location'), parameters('environmentName')), 6)]",
+    "computedDatabricksName": "[toLower(format('dbw{0}{1}', take(variables('cleanNamePrefix'), 8), variables('uniqueSuffix')))]",
+    "databricksName": "[if(not(equals(parameters('workspaceName'), '')), toLower(parameters('workspaceName')), variables('computedDatabricksName'))]",
+    "mrgName": "[if(not(equals(parameters('managedResourceGroupName'), '')), parameters('managedResourceGroupName'), format('{0}-databricks', resourceGroup().name))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Databricks/workspaces",
+      "apiVersion": "2024-05-01",
+      "name": "[variables('databricksName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('workspaceSku')]"
+      },
+      "properties": {
+        "managedResourceGroupId": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('mrgName'))]",
+        "parameters": {
+          "enableNoPublicIp": {
+            "value": "[parameters('enableNoPublicIp')]"
+          }
+        }
+      },
+      "tags": "[parameters('tags')]"
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Databricks/workspaces', variables('databricksName'))]"
+    },
+    "name": {
+      "type": "string",
+      "value": "[variables('databricksName')]"
+    }
+  }
+}

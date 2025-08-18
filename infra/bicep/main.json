@@ -1,0 +1,1696 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "4413739148740685918"
+    }
+  },
+  "definitions": {
+    "_1.azureAdAdminType": {
+      "type": "object",
+      "properties": {
+        "objectId": {
+          "type": "string",
+          "metadata": {
+            "description": "Azure AD Object ID of the administrator"
+          }
+        },
+        "principalName": {
+          "type": "string",
+          "metadata": {
+            "description": "Principal name (email/UPN) of the administrator"
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional: Principal type (User or Group). Default is User."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "types/common.bicep"
+        }
+      }
+    },
+    "_1.databricksConfigType": {
+      "type": "object",
+      "properties": {
+        "workspaceSku": {
+          "type": "string",
+          "allowedValues": [
+            "premium",
+            "standard",
+            "trial"
+          ],
+          "metadata": {
+            "description": "Databricks workspace pricing tier."
+          }
+        },
+        "enableNoPublicIp": {
+          "type": "bool",
+          "metadata": {
+            "description": "Disable public IP for Databricks workspace."
+          }
+        },
+        "managedResourceGroupName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Custom managed resource group name."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "types/common.bicep"
+        }
+      }
+    },
+    "_1.environmentTagsType": {
+      "type": "object",
+      "properties": {
+        "environment": {
+          "type": "string",
+          "metadata": {
+            "description": "Environment name (dev, staging, prod)"
+          }
+        },
+        "project": {
+          "type": "string",
+          "metadata": {
+            "description": "Project identifier"
+          }
+        },
+        "azd-env-name": {
+          "type": "string",
+          "metadata": {
+            "description": "AZD environment name"
+          }
+        },
+        "additionalTags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Additional custom tags"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "types/common.bicep"
+        }
+      }
+    },
+    "_1.eventHubConfigType": {
+      "type": "object",
+      "properties": {
+        "skuName": {
+          "type": "string",
+          "allowedValues": [
+            "Basic",
+            "Premium",
+            "Standard"
+          ],
+          "metadata": {
+            "description": "Event Hub namespace SKU."
+          }
+        },
+        "capacity": {
+          "type": "int",
+          "metadata": {
+            "description": "Event Hub namespace capacity (throughput units)."
+          }
+        },
+        "topicName": {
+          "type": "string",
+          "metadata": {
+            "description": "Event Hub topic name."
+          }
+        },
+        "partitionCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Event Hub topic partition count."
+          }
+        },
+        "messageRetentionInDays": {
+          "type": "int",
+          "metadata": {
+            "description": "Event Hub topic message retention in days."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "types/common.bicep"
+        }
+      }
+    },
+    "_1.fabricConfigType": {
+      "type": "object",
+      "properties": {
+        "skuName": {
+          "type": "string",
+          "allowedValues": [
+            "F128",
+            "F16",
+            "F2",
+            "F32",
+            "F4",
+            "F64",
+            "F8"
+          ],
+          "metadata": {
+            "description": "Fabric capacity SKU (F units)."
+          }
+        },
+        "adminUsers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Fabric capacity admin users (AAD object IDs or UPNs)."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "types/common.bicep"
+        }
+      }
+    },
+    "_1.postgresConfigType": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "allowedValues": [
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17"
+          ],
+          "metadata": {
+            "description": "PostgreSQL version."
+          }
+        },
+        "storageSizeGB": {
+          "type": "int",
+          "metadata": {
+            "description": "PostgreSQL storage size in GB."
+          }
+        },
+        "geoRedundantBackup": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "PostgreSQL geo-redundant backup setting."
+          }
+        },
+        "autoGrow": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "PostgreSQL auto-grow setting."
+          }
+        },
+        "skuName": {
+          "type": "string",
+          "allowedValues": [
+            "Burstable_B1ms",
+            "Burstable_B4ms",
+            "Standard_B4ms",
+            "Standard_D2s_v3",
+            "Standard_D4s_v3"
+          ],
+          "metadata": {
+            "description": "PostgreSQL compute SKU name (VM size)."
+          }
+        },
+        "skuTier": {
+          "type": "string",
+          "allowedValues": [
+            "Burstable",
+            "GeneralPurpose",
+            "MemoryOptimized"
+          ],
+          "metadata": {
+            "description": "PostgreSQL SKU tier."
+          }
+        },
+        "storageIops": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Storage IOPS for performance."
+          }
+        },
+        "storageTier": {
+          "type": "string",
+          "allowedValues": [
+            "P1",
+            "P10",
+            "P15",
+            "P2",
+            "P20",
+            "P3",
+            "P30",
+            "P4",
+            "P40",
+            "P50",
+            "P6",
+            "P60",
+            "P70",
+            "P80"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Storage tier for performance."
+          }
+        },
+        "availabilityZone": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Availability zone for the server."
+          }
+        },
+        "backupRetentionDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Backup retention days."
+          }
+        },
+        "azureAdAdministrators": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.azureAdAdminType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Azure AD administrators (array of objects with objectId and principalName properties)."
+          }
+        },
+        "azureAdAdminUsers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Azure AD admin users (legacy approach using principal names/emails). This is deprecated in favor of azureAdAdministrators."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "types/common.bicep"
+        }
+      }
+    },
+    "_1.resourceNamingType": {
+      "type": "object",
+      "properties": {
+        "resourceGroupName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional Resource Group name override."
+          }
+        },
+        "storageAccountName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional Storage account name override."
+          }
+        },
+        "databricksWorkspaceName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional Databricks workspace name override."
+          }
+        },
+        "fabricCapacityName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional Fabric capacity name override."
+          }
+        },
+        "postgresServerName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional PostgreSQL server name override."
+          }
+        },
+        "eventHubNamespaceName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional Event Hub namespace name override."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "types/common.bicep"
+        }
+      }
+    },
+    "_1.storageConfigType": {
+      "type": "object",
+      "properties": {
+        "skuName": {
+          "type": "string",
+          "allowedValues": [
+            "Premium_LRS",
+            "Premium_ZRS",
+            "Standard_GRS",
+            "Standard_LRS",
+            "Standard_RAGRS",
+            "Standard_ZRS"
+          ],
+          "metadata": {
+            "description": "Storage account SKU."
+          }
+        },
+        "containers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Storage containers to create."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "types/common.bicep"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "centralus",
+      "allowedValues": [
+        "eastus",
+        "eastus2",
+        "westeurope",
+        "northeurope",
+        "centralus",
+        "westus2",
+        "brazilsouth",
+        "francecentral",
+        "uksouth",
+        "southeastasia"
+      ],
+      "metadata": {
+        "description": "Azure region for deployment"
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Base name to seed resource names"
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "defaultValue": "[parameters('name')]",
+      "metadata": {
+        "description": "Environment name for resource naming"
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource group name override"
+      }
+    },
+    "postgresAdminUser": {
+      "type": "string",
+      "metadata": {
+        "description": "PostgreSQL administrator credentials"
+      }
+    },
+    "postgresAdminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "PostgreSQL administrator password"
+      }
+    },
+    "resourceNaming": {
+      "$ref": "#/definitions/_1.resourceNamingType",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Resource naming overrides"
+      }
+    },
+    "fabricConfig": {
+      "$ref": "#/definitions/_1.fabricConfigType",
+      "defaultValue": {
+        "skuName": "F2",
+        "adminUsers": null
+      },
+      "metadata": {
+        "description": "Fabric configuration"
+      }
+    },
+    "databricksConfig": {
+      "$ref": "#/definitions/_1.databricksConfigType",
+      "defaultValue": {
+        "workspaceSku": "standard",
+        "enableNoPublicIp": true,
+        "managedResourceGroupName": null
+      },
+      "metadata": {
+        "description": "Databricks configuration"
+      }
+    },
+    "storageConfig": {
+      "$ref": "#/definitions/_1.storageConfigType",
+      "defaultValue": {
+        "skuName": "Standard_LRS",
+        "containers": [
+          "staging",
+          "bronze",
+          "silver",
+          "gold"
+        ]
+      },
+      "metadata": {
+        "description": "Storage configuration"
+      }
+    },
+    "postgresConfig": {
+      "$ref": "#/definitions/_1.postgresConfigType",
+      "defaultValue": {
+        "version": "17",
+        "storageSizeGB": 64,
+        "geoRedundantBackup": "Disabled",
+        "autoGrow": "Enabled",
+        "skuName": "Standard_B4ms",
+        "skuTier": "Burstable",
+        "storageIops": 240,
+        "storageTier": "P6",
+        "availabilityZone": "1",
+        "backupRetentionDays": 7,
+        "azureAdAdminUsers": []
+      },
+      "metadata": {
+        "description": "PostgreSQL configuration"
+      }
+    },
+    "eventHubConfig": {
+      "$ref": "#/definitions/_1.eventHubConfigType",
+      "defaultValue": {
+        "skuName": "Standard",
+        "capacity": 1,
+        "topicName": "data-governance-events",
+        "partitionCount": 2,
+        "messageRetentionInDays": 1
+      },
+      "metadata": {
+        "description": "Event Hub configuration"
+      }
+    },
+    "tagsConfig": {
+      "$ref": "#/definitions/_1.environmentTagsType",
+      "defaultValue": {
+        "environment": "demo",
+        "project": "DataGovernance",
+        "azd-env-name": "[parameters('name')]",
+        "additionalTags": {}
+      },
+      "metadata": {
+        "description": "Environment and tagging configuration"
+      }
+    }
+  },
+  "variables": {
+    "resourceToken": "[toLower(uniqueString(subscription().id, parameters('location'), parameters('environmentName')))]",
+    "namePrefix": "[format('{0}-{1}', toLower(parameters('name')), variables('resourceToken'))]",
+    "allTags": "[union(createObject('azd-env-name', parameters('tagsConfig')['azd-env-name'], 'environment', parameters('tagsConfig').environment, 'project', parameters('tagsConfig').project), coalesce(tryGet(parameters('tagsConfig'), 'additionalTags'), createObject()))]",
+    "rgName": "[if(not(empty(parameters('resourceGroupName'))), parameters('resourceGroupName'), coalesce(tryGet(parameters('resourceNaming'), 'resourceGroupName'), format('rg-{0}', variables('namePrefix'))))]"
+  },
+  "resources": {
+    "rg": {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2024-11-01",
+      "name": "[variables('rgName')]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('allTags')]"
+    },
+    "identityMod": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "identity",
+      "resourceGroup": "[variables('rgName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namePrefix": {
+            "value": "[variables('namePrefix')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[variables('allTags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "13856841823202694948"
+            }
+          },
+          "parameters": {
+            "namePrefix": {
+              "type": "string",
+              "metadata": {
+                "description": "Base name prefix for resources"
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region for deployment"
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Resource tags"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2023-01-31",
+              "name": "[format('id-{0}', parameters('namePrefix'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]"
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('namePrefix')))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[format('id-{0}', parameters('namePrefix'))]"
+            },
+            "principalId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('namePrefix'))), '2023-01-31').principalId]"
+            },
+            "clientId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('namePrefix'))), '2023-01-31').clientId]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rg"
+      ]
+    },
+    "storageMod": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "storage",
+      "resourceGroup": "[variables('rgName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namePrefix": {
+            "value": "[variables('namePrefix')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[variables('allTags')]"
+          },
+          "storageAccountName": {
+            "value": "[coalesce(tryGet(parameters('resourceNaming'), 'storageAccountName'), '')]"
+          },
+          "skuName": {
+            "value": "[parameters('storageConfig').skuName]"
+          },
+          "containers": {
+            "value": "[parameters('storageConfig').containers]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "2203665007717474814"
+            }
+          },
+          "parameters": {
+            "namePrefix": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "skuName": {
+              "type": "string",
+              "defaultValue": "Standard_LRS",
+              "allowedValues": [
+                "Standard_LRS",
+                "Standard_GRS",
+                "Standard_RAGRS",
+                "Standard_ZRS",
+                "Premium_LRS",
+                "Premium_ZRS"
+              ]
+            },
+            "containers": {
+              "type": "array",
+              "defaultValue": [
+                "raw",
+                "curated",
+                "sandbox"
+              ]
+            },
+            "storageAccountName": {
+              "type": "string",
+              "defaultValue": "",
+              "maxLength": 24,
+              "metadata": {
+                "description": "Optional Storage account name override (must be globally unique, 3-24 lowercase alphanumeric characters only)."
+              }
+            }
+          },
+          "variables": {
+            "computedStorageAccountName": "[toLower(format('st{0}{1}', take(replace(replace(parameters('namePrefix'), '-', ''), '_', ''), 8), take(uniqueString(resourceGroup().id, parameters('namePrefix')), 11)))]",
+            "effectiveStorageAccountName": "[if(not(equals(parameters('storageAccountName'), '')), toLower(parameters('storageAccountName')), variables('computedStorageAccountName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2023-05-01",
+              "name": "[variables('effectiveStorageAccountName')]",
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "[parameters('skuName')]"
+              },
+              "kind": "StorageV2",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "supportsHttpsTrafficOnly": true
+              }
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/blobServices",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}', variables('effectiveStorageAccountName'), 'default')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('effectiveStorageAccountName'))]"
+              ]
+            },
+            {
+              "copy": {
+                "name": "containersRes",
+                "count": "[length(parameters('containers'))]"
+              },
+              "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+              "apiVersion": "2023-05-01",
+              "name": "[format('{0}/{1}/{2}', variables('effectiveStorageAccountName'), 'default', parameters('containers')[copyIndex()])]",
+              "properties": {
+                "publicAccess": "None"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('effectiveStorageAccountName'), 'default')]"
+              ]
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Storage/storageAccounts', variables('effectiveStorageAccountName'))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[variables('effectiveStorageAccountName')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rg"
+      ]
+    },
+    "databricksMod": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "databricks",
+      "resourceGroup": "[variables('rgName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namePrefix": {
+            "value": "[variables('namePrefix')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[variables('allTags')]"
+          },
+          "workspaceName": {
+            "value": "[coalesce(tryGet(parameters('resourceNaming'), 'databricksWorkspaceName'), '')]"
+          },
+          "workspaceSku": {
+            "value": "[parameters('databricksConfig').workspaceSku]"
+          },
+          "enableNoPublicIp": {
+            "value": "[parameters('databricksConfig').enableNoPublicIp]"
+          },
+          "managedResourceGroupName": {
+            "value": "[coalesce(tryGet(parameters('databricksConfig'), 'managedResourceGroupName'), '')]"
+          },
+          "environmentName": {
+            "value": "[parameters('environmentName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "10722752823137245627"
+            }
+          },
+          "parameters": {
+            "namePrefix": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "workspaceSku": {
+              "type": "string",
+              "defaultValue": "standard",
+              "allowedValues": [
+                "standard",
+                "premium",
+                "trial"
+              ]
+            },
+            "enableNoPublicIp": {
+              "type": "bool",
+              "defaultValue": true
+            },
+            "managedResourceGroupName": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "workspaceName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional Databricks workspace name override."
+              }
+            },
+            "environmentName": {
+              "type": "string",
+              "metadata": {
+                "description": "Environment name for unique resource naming"
+              }
+            }
+          },
+          "variables": {
+            "cleanNamePrefix": "[replace(replace(parameters('namePrefix'), '-', ''), '_', '')]",
+            "uniqueSuffix": "[take(uniqueString(subscription().id, parameters('location'), parameters('environmentName')), 6)]",
+            "computedDatabricksName": "[toLower(format('dbw{0}{1}', take(variables('cleanNamePrefix'), 8), variables('uniqueSuffix')))]",
+            "databricksName": "[if(not(equals(parameters('workspaceName'), '')), toLower(parameters('workspaceName')), variables('computedDatabricksName'))]",
+            "mrgName": "[if(not(equals(parameters('managedResourceGroupName'), '')), parameters('managedResourceGroupName'), format('{0}-databricks', resourceGroup().name))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Databricks/workspaces",
+              "apiVersion": "2024-05-01",
+              "name": "[variables('databricksName')]",
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "[parameters('workspaceSku')]"
+              },
+              "properties": {
+                "managedResourceGroupId": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('mrgName'))]",
+                "parameters": {
+                  "enableNoPublicIp": {
+                    "value": "[parameters('enableNoPublicIp')]"
+                  }
+                }
+              },
+              "tags": "[parameters('tags')]"
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Databricks/workspaces', variables('databricksName'))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[variables('databricksName')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rg"
+      ]
+    },
+    "fabricMod": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "fabric",
+      "resourceGroup": "[variables('rgName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namePrefix": {
+            "value": "[variables('namePrefix')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[variables('allTags')]"
+          },
+          "adminUsers": {
+            "value": "[coalesce(tryGet(parameters('fabricConfig'), 'adminUsers'), createArray(parameters('postgresAdminUser')))]"
+          },
+          "capacityName": {
+            "value": "[coalesce(tryGet(parameters('resourceNaming'), 'fabricCapacityName'), '')]"
+          },
+          "skuName": {
+            "value": "[parameters('fabricConfig').skuName]"
+          },
+          "environmentName": {
+            "value": "[parameters('environmentName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "7216867956783295596"
+            }
+          },
+          "parameters": {
+            "namePrefix": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "adminUsers": {
+              "type": "array"
+            },
+            "skuName": {
+              "type": "string",
+              "defaultValue": "F2",
+              "allowedValues": [
+                "F2",
+                "F4",
+                "F8",
+                "F16",
+                "F32",
+                "F64",
+                "F128"
+              ]
+            },
+            "capacityName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional Fabric capacity name override."
+              }
+            },
+            "environmentName": {
+              "type": "string",
+              "metadata": {
+                "description": "Environment name for unique resource naming"
+              }
+            }
+          },
+          "variables": {
+            "cleanNamePrefix": "[replace(replace(parameters('namePrefix'), '-', ''), '_', '')]",
+            "uniqueSuffix": "[take(uniqueString(subscription().id, parameters('location'), parameters('environmentName')), 6)]",
+            "computedCapacityName": "[toLower(format('fc{0}{1}', take(variables('cleanNamePrefix'), 8), variables('uniqueSuffix')))]",
+            "fabricCapacityName": "[if(not(equals(parameters('capacityName'), '')), toLower(parameters('capacityName')), variables('computedCapacityName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Fabric/capacities",
+              "apiVersion": "2023-11-01",
+              "name": "[variables('fabricCapacityName')]",
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "[parameters('skuName')]",
+                "tier": "Fabric"
+              },
+              "properties": {
+                "administration": {
+                  "members": "[parameters('adminUsers')]"
+                }
+              },
+              "tags": "[parameters('tags')]"
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Fabric/capacities', variables('fabricCapacityName'))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[variables('fabricCapacityName')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rg"
+      ]
+    },
+    "postgresMod": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "postgres",
+      "resourceGroup": "[variables('rgName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namePrefix": {
+            "value": "[variables('namePrefix')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[variables('allTags')]"
+          },
+          "postgresAdminUser": {
+            "value": "[parameters('postgresAdminUser')]"
+          },
+          "postgresAdminPassword": {
+            "value": "[parameters('postgresAdminPassword')]"
+          },
+          "serverName": {
+            "value": "[coalesce(tryGet(parameters('resourceNaming'), 'postgresServerName'), '')]"
+          },
+          "version": {
+            "value": "[parameters('postgresConfig').version]"
+          },
+          "storageSizeGB": {
+            "value": "[parameters('postgresConfig').storageSizeGB]"
+          },
+          "geoRedundantBackup": {
+            "value": "[parameters('postgresConfig').geoRedundantBackup]"
+          },
+          "autoGrow": {
+            "value": "[parameters('postgresConfig').autoGrow]"
+          },
+          "skuName": {
+            "value": "[parameters('postgresConfig').skuName]"
+          },
+          "skuTier": {
+            "value": "[parameters('postgresConfig').skuTier]"
+          },
+          "storageIops": {
+            "value": "[coalesce(tryGet(parameters('postgresConfig'), 'storageIops'), 240)]"
+          },
+          "storageTier": {
+            "value": "[coalesce(tryGet(parameters('postgresConfig'), 'storageTier'), 'P6')]"
+          },
+          "availabilityZone": {
+            "value": "[coalesce(tryGet(parameters('postgresConfig'), 'availabilityZone'), '1')]"
+          },
+          "backupRetentionDays": {
+            "value": "[coalesce(tryGet(parameters('postgresConfig'), 'backupRetentionDays'), 7)]"
+          },
+          "azureAdAdministrators": {
+            "value": "[coalesce(tryGet(parameters('postgresConfig'), 'azureAdAdministrators'), createArray())]"
+          },
+          "azureAdAdminUsers": {
+            "value": "[coalesce(tryGet(parameters('postgresConfig'), 'azureAdAdminUsers'), createArray())]"
+          },
+          "environmentName": {
+            "value": "[parameters('environmentName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "9270090359683911858"
+            }
+          },
+          "parameters": {
+            "namePrefix": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "postgresAdminUser": {
+              "type": "string"
+            },
+            "postgresAdminPassword": {
+              "type": "securestring"
+            },
+            "version": {
+              "type": "string",
+              "defaultValue": "17",
+              "allowedValues": [
+                "11",
+                "12",
+                "13",
+                "14",
+                "15",
+                "16",
+                "17"
+              ]
+            },
+            "storageSizeGB": {
+              "type": "int",
+              "defaultValue": 64
+            },
+            "geoRedundantBackup": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ]
+            },
+            "autoGrow": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ]
+            },
+            "skuName": {
+              "type": "string",
+              "defaultValue": "Standard_B4ms",
+              "allowedValues": [
+                "Burstable_B1ms",
+                "Burstable_B4ms",
+                "Standard_B4ms",
+                "Standard_D2s_v3",
+                "Standard_D4s_v3"
+              ]
+            },
+            "skuTier": {
+              "type": "string",
+              "defaultValue": "Burstable",
+              "allowedValues": [
+                "Burstable",
+                "GeneralPurpose",
+                "MemoryOptimized"
+              ]
+            },
+            "serverName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional PostgreSQL flexible server name override."
+              }
+            },
+            "environmentName": {
+              "type": "string",
+              "metadata": {
+                "description": "Environment name for unique resource naming"
+              }
+            },
+            "azureAdAdminUsers": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "defaultValue": [],
+              "metadata": {
+                "description": "Azure AD admin users for PostgreSQL server (legacy approach using principal names/emails)"
+              }
+            },
+            "azureAdAdministrators": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Azure AD administrators with object IDs (new approach)"
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "defaultValue": "[tenant().tenantId]",
+              "metadata": {
+                "description": "Azure AD tenant ID"
+              }
+            },
+            "storageIops": {
+              "type": "int",
+              "defaultValue": 240,
+              "metadata": {
+                "description": "Storage IOPS (required for performance tiers)"
+              }
+            },
+            "storageTier": {
+              "type": "string",
+              "defaultValue": "P6",
+              "allowedValues": [
+                "P1",
+                "P2",
+                "P3",
+                "P4",
+                "P6",
+                "P10",
+                "P15",
+                "P20",
+                "P30",
+                "P40",
+                "P50",
+                "P60",
+                "P70",
+                "P80"
+              ],
+              "metadata": {
+                "description": "Storage tier for performance"
+              }
+            },
+            "availabilityZone": {
+              "type": "string",
+              "defaultValue": "1",
+              "metadata": {
+                "description": "Availability zone for the server"
+              }
+            },
+            "backupRetentionDays": {
+              "type": "int",
+              "defaultValue": 7,
+              "metadata": {
+                "description": "Backup retention days"
+              }
+            }
+          },
+          "variables": {
+            "cleanNamePrefix": "[replace(replace(parameters('namePrefix'), '-', ''), '_', '')]",
+            "uniqueSuffix": "[take(uniqueString(subscription().id, parameters('location'), parameters('environmentName')), 6)]",
+            "computedPostgresName": "[toLower(format('pg{0}{1}', take(variables('cleanNamePrefix'), 8), variables('uniqueSuffix')))]",
+            "postgresName": "[if(not(equals(parameters('serverName'), '')), toLower(parameters('serverName')), variables('computedPostgresName'))]",
+            "hasLegacyAdmins": "[not(empty(parameters('azureAdAdminUsers')))]",
+            "hasNewAdmins": "[not(empty(parameters('azureAdAdministrators')))]",
+            "hasAnyAdmins": "[or(variables('hasLegacyAdmins'), variables('hasNewAdmins'))]"
+          },
+          "resources": {
+            "postgres": {
+              "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+              "apiVersion": "2025-01-01-preview",
+              "name": "[variables('postgresName')]",
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "[parameters('skuName')]",
+                "tier": "[parameters('skuTier')]"
+              },
+              "properties": {
+                "replica": {
+                  "role": "Primary"
+                },
+                "storage": {
+                  "iops": "[parameters('storageIops')]",
+                  "tier": "[parameters('storageTier')]",
+                  "storageSizeGB": "[parameters('storageSizeGB')]",
+                  "autoGrow": "[parameters('autoGrow')]"
+                },
+                "network": {
+                  "publicNetworkAccess": "Enabled"
+                },
+                "dataEncryption": {
+                  "type": "SystemManaged"
+                },
+                "authConfig": {
+                  "activeDirectoryAuth": "[if(variables('hasAnyAdmins'), 'Enabled', 'Disabled')]",
+                  "passwordAuth": "Enabled",
+                  "tenantId": "[parameters('tenantId')]"
+                },
+                "version": "[parameters('version')]",
+                "administratorLogin": "[parameters('postgresAdminUser')]",
+                "administratorLoginPassword": "[parameters('postgresAdminPassword')]",
+                "availabilityZone": "[parameters('availabilityZone')]",
+                "backup": {
+                  "backupRetentionDays": "[parameters('backupRetentionDays')]",
+                  "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
+                },
+                "highAvailability": {
+                  "mode": "Disabled"
+                },
+                "maintenanceWindow": {
+                  "customWindow": "Disabled",
+                  "dayOfWeek": 0,
+                  "startHour": 0,
+                  "startMinute": 0
+                },
+                "replicationRole": "Primary"
+              },
+              "tags": "[parameters('tags')]"
+            },
+            "postgresAzureAdAdministrators": {
+              "copy": {
+                "name": "postgresAzureAdAdministrators",
+                "count": "[length(parameters('azureAdAdministrators'))]"
+              },
+              "condition": "[variables('hasNewAdmins')]",
+              "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
+              "apiVersion": "2025-01-01-preview",
+              "name": "[format('{0}/{1}', variables('postgresName'), parameters('azureAdAdministrators')[copyIndex()].objectId)]",
+              "properties": {
+                "principalType": "[if(not(empty(parameters('azureAdAdministrators')[copyIndex()].principalType)), parameters('azureAdAdministrators')[copyIndex()].principalType, 'User')]",
+                "principalName": "[parameters('azureAdAdministrators')[copyIndex()].principalName]",
+                "tenantId": "[parameters('tenantId')]"
+              },
+              "dependsOn": [
+                "postgres"
+              ]
+            },
+            "postgresAzureAdAdminsLegacy": {
+              "copy": {
+                "name": "postgresAzureAdAdminsLegacy",
+                "count": "[length(parameters('azureAdAdminUsers'))]"
+              },
+              "condition": "[and(variables('hasLegacyAdmins'), not(variables('hasNewAdmins')))]",
+              "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
+              "apiVersion": "2025-01-01-preview",
+              "name": "[format('{0}/{1}', variables('postgresName'), guid(parameters('azureAdAdminUsers')[copyIndex()], resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresName'))))]",
+              "properties": {
+                "principalType": "User",
+                "principalName": "[parameters('azureAdAdminUsers')[copyIndex()]]",
+                "tenantId": "[parameters('tenantId')]"
+              },
+              "dependsOn": [
+                "postgres"
+              ]
+            },
+            "advancedThreatProtection": {
+              "type": "Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings",
+              "apiVersion": "2025-01-01-preview",
+              "name": "[format('{0}/{1}', variables('postgresName'), 'Default')]",
+              "properties": {
+                "state": "Enabled"
+              },
+              "dependsOn": [
+                "postgres"
+              ]
+            },
+            "allowAzureServices": {
+              "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
+              "apiVersion": "2025-01-01-preview",
+              "name": "[format('{0}/{1}', variables('postgresName'), 'AllowAllAzureServicesAndResourcesWithinAzureIps')]",
+              "properties": {
+                "startIpAddress": "0.0.0.0",
+                "endIpAddress": "0.0.0.0"
+              },
+              "dependsOn": [
+                "postgres"
+              ]
+            }
+          },
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresName'))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[variables('postgresName')]"
+            },
+            "fullyQualifiedDomainName": {
+              "type": "string",
+              "value": "[reference('postgres').fullyQualifiedDomainName]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rg"
+      ]
+    },
+    "eventHubMod": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "eventhub",
+      "resourceGroup": "[variables('rgName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namePrefix": {
+            "value": "[variables('namePrefix')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[variables('allTags')]"
+          },
+          "namespaceName": {
+            "value": "[coalesce(tryGet(parameters('resourceNaming'), 'eventHubNamespaceName'), '')]"
+          },
+          "topicName": {
+            "value": "[parameters('eventHubConfig').topicName]"
+          },
+          "skuName": {
+            "value": "[parameters('eventHubConfig').skuName]"
+          },
+          "capacity": {
+            "value": "[parameters('eventHubConfig').capacity]"
+          },
+          "partitionCount": {
+            "value": "[parameters('eventHubConfig').partitionCount]"
+          },
+          "messageRetentionInDays": {
+            "value": "[parameters('eventHubConfig').messageRetentionInDays]"
+          },
+          "environmentName": {
+            "value": "[parameters('environmentName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "2695781901380859083"
+            }
+          },
+          "parameters": {
+            "namePrefix": {
+              "type": "string",
+              "metadata": {
+                "description": "Base name prefix for resources"
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure region for deployment"
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Resource tags"
+              }
+            },
+            "namespaceName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Event Hub namespace name override"
+              }
+            },
+            "topicName": {
+              "type": "string",
+              "defaultValue": "data-governance-events",
+              "metadata": {
+                "description": "Event Hub topic name"
+              }
+            },
+            "skuName": {
+              "type": "string",
+              "defaultValue": "Standard",
+              "allowedValues": [
+                "Basic",
+                "Standard",
+                "Premium"
+              ],
+              "metadata": {
+                "description": "Event Hub SKU"
+              }
+            },
+            "capacity": {
+              "type": "int",
+              "defaultValue": 1,
+              "metadata": {
+                "description": "Event Hub capacity (throughput units)"
+              }
+            },
+            "partitionCount": {
+              "type": "int",
+              "defaultValue": 2,
+              "metadata": {
+                "description": "Event Hub topic partition count"
+              }
+            },
+            "messageRetentionInDays": {
+              "type": "int",
+              "defaultValue": 15,
+              "metadata": {
+                "description": "Event Hub topic message retention in days"
+              }
+            },
+            "environmentName": {
+              "type": "string",
+              "metadata": {
+                "description": "Environment name for unique resource naming"
+              }
+            }
+          },
+          "variables": {
+            "cleanNamePrefix": "[replace(replace(parameters('namePrefix'), '_', ''), ' ', '')]",
+            "uniqueSuffix": "[take(uniqueString(subscription().id, parameters('location'), parameters('environmentName')), 6)]",
+            "eventHubNamespaceName": "[if(not(empty(parameters('namespaceName'))), parameters('namespaceName'), format('eh{0}{1}', take(variables('cleanNamePrefix'), 8), variables('uniqueSuffix')))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.EventHub/namespaces",
+              "apiVersion": "2024-01-01",
+              "name": "[variables('eventHubNamespaceName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "sku": {
+                "name": "[parameters('skuName')]",
+                "tier": "[parameters('skuName')]",
+                "capacity": "[parameters('capacity')]"
+              },
+              "properties": {
+                "disableLocalAuth": false,
+                "zoneRedundant": false,
+                "isAutoInflateEnabled": false,
+                "maximumThroughputUnits": 0,
+                "kafkaEnabled": true,
+                "minimumTlsVersion": "1.2",
+                "publicNetworkAccess": "Enabled"
+              }
+            },
+            {
+              "type": "Microsoft.EventHub/namespaces/eventhubs",
+              "apiVersion": "2024-01-01",
+              "name": "[format('{0}/{1}', variables('eventHubNamespaceName'), parameters('topicName'))]",
+              "properties": {
+                "messageRetentionInDays": "[parameters('messageRetentionInDays')]",
+                "partitionCount": "[parameters('partitionCount')]",
+                "status": "Active"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.EventHub/namespaces/authorizationRules",
+              "apiVersion": "2024-01-01",
+              "name": "[format('{0}/{1}', variables('eventHubNamespaceName'), 'RootManageSharedAccessKey')]",
+              "properties": {
+                "rights": [
+                  "Listen",
+                  "Manage",
+                  "Send"
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName'))]"
+            },
+            "name": {
+              "type": "string",
+              "value": "[variables('eventHubNamespaceName')]"
+            },
+            "namespaceName": {
+              "type": "string",
+              "value": "[variables('eventHubNamespaceName')]"
+            },
+            "topicName": {
+              "type": "string",
+              "value": "[parameters('topicName')]"
+            },
+            "serviceBusEndpoint": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.EventHub/namespaces', variables('eventHubNamespaceName')), '2024-01-01').serviceBusEndpoint]"
+            },
+            "authRuleName": {
+              "type": "string",
+              "value": "RootManageSharedAccessKey"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "rg"
+      ]
+    }
+  },
+  "outputs": {
+    "RESOURCE_GROUP_ID": {
+      "type": "string",
+      "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('rgName'))]"
+    },
+    "resourceGroup": {
+      "type": "object",
+      "value": {
+        "id": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('rgName'))]",
+        "name": "[variables('rgName')]",
+        "location": "[reference('rg', '2024-11-01', 'full').location]"
+      }
+    },
+    "userAssignedIdentity": {
+      "type": "object",
+      "value": {
+        "id": "[reference('identityMod').outputs.id.value]",
+        "name": "[reference('identityMod').outputs.name.value]",
+        "principalId": "[reference('identityMod').outputs.principalId.value]",
+        "clientId": "[reference('identityMod').outputs.clientId.value]"
+      }
+    },
+    "storage": {
+      "type": "object",
+      "value": {
+        "id": "[reference('storageMod').outputs.id.value]",
+        "name": "[reference('storageMod').outputs.name.value]"
+      }
+    },
+    "databricks": {
+      "type": "object",
+      "value": {
+        "id": "[reference('databricksMod').outputs.id.value]",
+        "name": "[reference('databricksMod').outputs.name.value]"
+      }
+    },
+    "fabric": {
+      "type": "object",
+      "value": {
+        "id": "[reference('fabricMod').outputs.id.value]",
+        "name": "[reference('fabricMod').outputs.name.value]"
+      }
+    },
+    "postgres": {
+      "type": "object",
+      "value": {
+        "id": "[reference('postgresMod').outputs.id.value]",
+        "name": "[reference('postgresMod').outputs.name.value]"
+      }
+    },
+    "eventHub": {
+      "type": "object",
+      "value": {
+        "id": "[reference('eventHubMod').outputs.id.value]",
+        "name": "[reference('eventHubMod').outputs.name.value]",
+        "namespaceName": "[reference('eventHubMod').outputs.namespaceName.value]",
+        "topicName": "[reference('eventHubMod').outputs.topicName.value]",
+        "serviceBusEndpoint": "[reference('eventHubMod').outputs.serviceBusEndpoint.value]"
+      }
+    }
+  }
+}

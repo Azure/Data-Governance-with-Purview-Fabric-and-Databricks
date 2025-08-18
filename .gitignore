@@ -416,3 +416,7 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Bicep Params
+infra/main.parameters.json
+infra/bicep/main.bicepparam

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "14454729426971895400"
+    }
+  },
+  "parameters": {
+    "namePrefix": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "object"
+    },
+    "adminUsers": {
+      "type": "array"
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "F2",
+      "allowedValues": [
+        "F2",
+        "F4",
+        "F8",
+        "F16",
+        "F32",
+        "F64",
+        "F128"
+      ]
+    },
+    "capacityName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Fabric capacity name override."
+      }
+    }
+  },
+  "variables": {
+    "computedCapacityName": "[toLower(format('fc{0}{1}', take(replace(replace(parameters('namePrefix'), '-', ''), '_', ''), 10), uniqueString(resourceGroup().id, parameters('namePrefix'))))]",
+    "fabricCapacityName": "[if(not(equals(parameters('capacityName'), '')), toLower(parameters('capacityName')), variables('computedCapacityName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Fabric/capacities",
+      "apiVersion": "2023-11-01",
+      "name": "[variables('fabricCapacityName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "Fabric"
+      },
+      "properties": {
+        "administration": {
+          "members": "[parameters('adminUsers')]"
+        }
+      },
+      "tags": "[parameters('tags')]"
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Fabric/capacities', variables('fabricCapacityName'))]"
+    },
+    "name": {
+      "type": "string",
+      "value": "[variables('fabricCapacityName')]"
+    }
+  }
+}
