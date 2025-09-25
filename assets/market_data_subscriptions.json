@@ -1,0 +1,18 @@
+{
+  "generated": "2025-09-23",
+  "description": "Aggregated list of market data symbols (equities, ETFs, crypto with -USD pairs) for Event Hub partition key usage.",
+  "symbols": {
+    "empresas_brasileiras": ["ABEV","STNE","XP","PAGS","VSTA","ARCE","ERJ"],
+    "empresas_globais": ["AAPL","MSFT","NVDA","AMZN","GOOGL","META","TSLA","BRK.B","TSM","WMT","JPM","XOM","JNJ","V","PG","UNH","005930.KQ","LLY","AVGO"],
+    "etfs": ["QQQ","EQQQ","QTEC","TDIV","VUG","IWF","SPYG","VTI","IVV","SPY","EEM","EFA","VEA","VWO","IYW","SOXX","ARKK","IBB","GLD","SLV"],
+    "crypto_base": ["BTC","ETH","BNB","SOL","XRP","ADA","DOGE","AVAX","TRX","MATIC"],
+    "crypto_usd_pairs": ["BTC-USD","ETH-USD","BNB-USD","SOL-USD","XRP-USD","ADA-USD","DOGE-USD","AVAX-USD","TRX-USD","MATIC-USD"]
+  },
+  "all": [
+    "ABEV","STNE","XP","PAGS","VSTA","ARCE","ERJ",
+    "AAPL","MSFT","NVDA","AMZN","GOOGL","META","TSLA","BRK.B","TSM","WMT","JPM","XOM","JNJ","V","PG","UNH","005930.KQ","LLY","AVGO",
+    "QQQ","EQQQ","QTEC","TDIV","VUG","IWF","SPYG","VTI","IVV","SPY","EEM","EFA","VEA","VWO","IYW","SOXX","ARKK","IBB","GLD","SLV",
+    "BTC","ETH","BNB","SOL","XRP","ADA","DOGE","AVAX","TRX","MATIC",
+    "BTC-USD","ETH-USD","BNB-USD","SOL-USD","XRP-USD","ADA-USD","DOGE-USD","AVAX-USD","TRX-USD","MATIC-USD"
+  ]
+}

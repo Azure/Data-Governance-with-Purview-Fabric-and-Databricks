@@ -1,0 +1,1 @@
+// Outputs consolidated in main.tf (kept file for structure consistency)
