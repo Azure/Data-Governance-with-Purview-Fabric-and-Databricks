@@ -10,6 +10,8 @@
 *.userosscache
 *.sln.docstates
 *.env
+*main.parameters.json
+*main.bicepparam
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -420,3 +422,8 @@ FodyWeavers.xsd
 # Bicep Params
 infra/main.parameters.json
 infra/bicep/main.bicepparam
+main.backup.bicepparam
+
+# Env Files
+env_files/.env
+*.env

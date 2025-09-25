@@ -45,7 +45,8 @@ storage_containers = [
   "gold",
   "raw",
   "curated",
-  "sandbox"
+  "sandbox",
+  "ehcapture"
 ]
 
 # PostgreSQL configuration
@@ -55,3 +56,14 @@ postgres_geo_redundant_backup  = "Disabled"
 postgres_auto_grow            = "Enabled"
 postgres_sku_name             = "Standard_D2s_v3"
 postgres_sku_tier             = "GeneralPurpose"
+
+# Event Hub configuration (optional overrides)
+# eventhub_namespace_name        = "eh-datagov-dev"
+# eventhub_name                  = "market-data"
+# eventhub_partition_count       = 4
+# eventhub_message_retention_days = 1
+# eventhub_consumer_groups       = ["raw-loader","analytics","replay"]
+
+# Key Vault (optional overrides)
+# enable_key_vault = true
+# key_vault_name   = "kv-datagov-dev"

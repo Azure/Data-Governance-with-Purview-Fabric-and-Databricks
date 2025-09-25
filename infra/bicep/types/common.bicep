@@ -118,6 +118,27 @@ type eventHubConfigType = {
   
   @description('Event Hub topic message retention in days.')
   messageRetentionInDays: int
+
+  @description('Consumer groups to create for the Event Hub.')
+  consumerGroups: string[]?
+
+  @description('Enable capture to Blob Storage.')
+  captureEnabled: bool?
+
+  @description('Capture interval in seconds.')
+  captureIntervalInSeconds: int?
+
+  @description('Capture size limit in bytes.')
+  captureSizeLimitInBytes: int?
+
+  @description('Capture encoding.')
+  captureEncoding: ('Avro' | 'AvroDeflate')?
+
+  @description('Capture archive name format.')
+  captureArchiveNameFormat: string?
+
+  @description('Blob container name for capture destination (must exist).')
+  captureContainerName: string?
 }
 
 @export()

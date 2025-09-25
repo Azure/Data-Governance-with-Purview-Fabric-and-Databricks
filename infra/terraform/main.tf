@@ -128,3 +128,41 @@ module "postgres" {
   sku_name               = var.postgres_sku_name
   sku_tier               = var.postgres_sku_tier
 }
+
+# Event Hub Module
+module "eventhub" {
+  source = "./modules/eventhub"
+
+  name_prefix         = local.name_prefix
+  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
+  tags                = local.all_tags
+
+  namespace_name             = var.eventhub_namespace_name
+  eventhub_name              = var.eventhub_name
+  sku_name                   = var.eventhub_sku_name
+  capacity                   = var.eventhub_capacity
+  partition_count            = var.eventhub_partition_count
+  message_retention_days     = var.eventhub_message_retention_days
+  consumer_groups            = var.eventhub_consumer_groups
+  capture_enabled            = var.eventhub_capture_enabled
+  capture_storage_account_id = module.storage.id
+  capture_container_name     = var.eventhub_capture_container_name
+  capture_interval_seconds   = var.eventhub_capture_interval_seconds
+  capture_size_limit_bytes   = var.eventhub_capture_size_limit_bytes
+  capture_encoding           = var.eventhub_capture_encoding
+  capture_archive_name_format = var.eventhub_capture_archive_name_format
+}
+
+# Key Vault Module
+module "keyvault" {
+  source              = "./modules/keyvault"
+  count               = var.enable_key_vault ? 1 : 0
+  name_prefix         = local.name_prefix
+  location            = var.location
+  resource_group_name = azurerm_resource_group.main.name
+  tags                = local.all_tags
+  key_vault_name      = var.key_vault_name
+  postgres_admin_password   = var.postgres_admin_password
+  eventhub_connection_string = module.eventhub.primary_connection_string
+}

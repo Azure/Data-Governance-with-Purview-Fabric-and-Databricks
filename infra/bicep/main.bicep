@@ -52,12 +52,12 @@ param databricksConfig types.databricksConfigType = {
 @description('Storage configuration')
 param storageConfig types.storageConfigType = {
   skuName: 'Standard_LRS'
-  containers: ['staging','bronze', 'silver', 'gold']
+  containers: ['staging','bronze', 'silver', 'gold', 'ehcapture']
 }
 
 @description('PostgreSQL configuration')
 param postgresConfig types.postgresConfigType = {
-  version: '17'
+  version: '16'
   storageSizeGB: 64
   geoRedundantBackup: 'Disabled'
   autoGrow: 'Enabled'
@@ -74,10 +74,20 @@ param postgresConfig types.postgresConfigType = {
 param eventHubConfig types.eventHubConfigType = {
   skuName: 'Standard'
   capacity: 1
-  topicName: 'data-governance-events'
+  topicName: 'market-data'
   partitionCount: 2
   messageRetentionInDays: 1
+  consumerGroups: ['raw-loader','analytics','replay']
+  captureEnabled: true
+  captureIntervalInSeconds: 300
+  captureSizeLimitInBytes: 314572800
+  captureEncoding: 'Avro'
+  captureArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+  captureContainerName: 'ehcapture'
 }
+
+@description('Optional Key Vault name override')
+param keyVaultName string = ''
 
 @description('Environment and tagging configuration')
 param tagsConfig types.environmentTagsType = {
@@ -147,6 +157,23 @@ module databricksMod './modules/databricks.bicep' = {
   }
 }
 
+// Key Vault Module (always deployed; use enableKeyVault to toggle usage in apps)
+module keyVaultMod './modules/keyvault.bicep' = {
+  name: 'keyvault'
+  scope: resourceGroup(rg.name)
+  params: {
+    namePrefix: namePrefix
+    location: location
+    tags: allTags
+    environmentName: environmentName
+    keyVaultName: keyVaultName
+    postgresAdminPassword: postgresAdminPassword
+    identityPrincipalId: identityMod.outputs.principalId
+    // Event Hub secret created after event hub exists; pass namespace & rule later via separate secret resource
+    createEventHubConnectionSecret: false
+  }
+}
+
 // Fabric Module
 module fabricMod './modules/fabric.bicep' = {
   name: 'fabric'
@@ -204,8 +231,17 @@ module eventHubMod './modules/eventhub.bicep' = {
     partitionCount: eventHubConfig.partitionCount
     messageRetentionInDays: eventHubConfig.messageRetentionInDays
     environmentName: environmentName
+    consumerGroups: eventHubConfig.?consumerGroups ?? []
+    captureEnabled: eventHubConfig.?captureEnabled ?? true
+    captureIntervalInSeconds: eventHubConfig.?captureIntervalInSeconds ?? 300
+    captureSizeLimitInBytes: eventHubConfig.?captureSizeLimitInBytes ?? 314572800
+    captureEncoding: eventHubConfig.?captureEncoding ?? 'Avro'
+    captureArchiveNameFormat: eventHubConfig.?captureArchiveNameFormat ?? '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+    captureBlobContainer: eventHubConfig.?captureContainerName ?? 'ehcapture'
+    captureStorageAccountResourceId: storageMod.outputs.id
   }
 }
+
 
 // Outputs
 output RESOURCE_GROUP_ID string = rg.id
@@ -250,3 +286,7 @@ output eventHub object = {
   topicName: eventHubMod.outputs.topicName
   serviceBusEndpoint: eventHubMod.outputs.serviceBusEndpoint
 }
+
+output keyVaultId string = keyVaultMod.outputs.id
+output keyVaultName string = keyVaultMod.outputs.name
+output keyVaultUri string = keyVaultMod.outputs.uri

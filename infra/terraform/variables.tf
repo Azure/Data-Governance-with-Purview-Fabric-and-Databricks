@@ -151,8 +151,9 @@ variable "postgres_version" {
   default     = "16"
   
   validation {
-    condition     = contains(["16", "15", "14", "13"], var.postgres_version)
-    error_message = "PostgreSQL version must be 16, 15, 14, or 13."
+    # Added versions 12 and 11 to align with .env (PGAZUREVERSION) and Bicep module which already supports 11-17
+    condition     = contains(["16", "15", "14", "13", "12", "11"], var.postgres_version)
+    error_message = "PostgreSQL version must be one of: 16, 15, 14, 13, 12, 11."
   }
 }
 
@@ -209,4 +210,104 @@ variable "postgres_sku_tier" {
     condition     = contains(["Burstable", "GeneralPurpose", "MemoryOptimized"], var.postgres_sku_tier)
     error_message = "PostgreSQL SKU tier must be Burstable, GeneralPurpose, or MemoryOptimized."
   }
+}
+
+# Event Hub Configuration
+variable "eventhub_namespace_name" {
+  description = "Optional Event Hub namespace name override"
+  type        = string
+  default     = ""
+}
+
+variable "eventhub_name" {
+  description = "Event Hub name"
+  type        = string
+  default     = "market-data"
+}
+
+variable "eventhub_sku_name" {
+  description = "Event Hub namespace SKU"
+  type        = string
+  default     = "Standard"
+  validation {
+    condition     = contains(["Basic","Standard","Premium"], var.eventhub_sku_name)
+    error_message = "Event Hub SKU must be Basic, Standard or Premium."
+  }
+}
+
+variable "eventhub_capacity" {
+  description = "Event Hub namespace capacity (throughput units)"
+  type        = number
+  default     = 1
+}
+
+variable "eventhub_partition_count" {
+  description = "Event Hub partition count"
+  type        = number
+  default     = 2
+}
+
+variable "eventhub_message_retention_days" {
+  description = "Event Hub message retention days"
+  type        = number
+  default     = 1
+}
+
+variable "eventhub_consumer_groups" {
+  description = "Consumer groups to create"
+  type        = list(string)
+  default     = ["raw-loader","analytics","replay"]
+}
+
+variable "eventhub_capture_enabled" {
+  description = "Enable capture to Blob Storage"
+  type        = bool
+  default     = true
+}
+
+variable "eventhub_capture_container_name" {
+  description = "Blob container for capture (must exist)"
+  type        = string
+  default     = "ehcapture"
+}
+
+variable "eventhub_capture_interval_seconds" {
+  description = "Capture interval seconds"
+  type        = number
+  default     = 300
+}
+
+variable "eventhub_capture_size_limit_bytes" {
+  description = "Capture size limit bytes"
+  type        = number
+  default     = 314572800
+}
+
+variable "eventhub_capture_encoding" {
+  description = "Capture encoding"
+  type        = string
+  default     = "Avro"
+  validation {
+    condition     = contains(["Avro","AvroDeflate"], var.eventhub_capture_encoding)
+    error_message = "Capture encoding must be Avro or AvroDeflate."
+  }
+}
+
+variable "eventhub_capture_archive_name_format" {
+  description = "Capture archive name format"
+  type        = string
+  default     = "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}"
+}
+
+# Key Vault
+variable "key_vault_name" {
+  description = "Optional Key Vault name override"
+  type        = string
+  default     = ""
+}
+
+variable "enable_key_vault" {
+  description = "Enable Key Vault provisioning"
+  type        = bool
+  default     = true
 }

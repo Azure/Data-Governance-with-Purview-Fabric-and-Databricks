@@ -17,3 +17,5 @@ dependencies = [
     "seaborn>=0.13.2",
     "sqlalchemy>=2.0.43",
 ]
+[project.optional-dependencies]
+secrets = ["azure-identity>=1.16.0","azure-keyvault-secrets>=4.8.0","python-dotenv>=1.0.0"]

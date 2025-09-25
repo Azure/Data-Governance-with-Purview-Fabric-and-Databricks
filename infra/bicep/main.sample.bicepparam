@@ -4,7 +4,7 @@ using './main.bicep'
 param location = 'centralus'
 param name = 'wkpdg'
 param postgresAdminUser = 'pgadmin'
-param postgresAdminPassword = 'S7rong!Passw0rd'
+param postgresAdminPassword = 'DataGov2025!'
 
 // Resource naming overrides (optional)
 param resourceNaming = {
@@ -14,11 +14,10 @@ param resourceNaming = {
   // fabricCapacityName: 'fab-datagovernance-dev'
   // postgresServerName: 'pg-datagovernance-dev'
 }
-
 // Fabric configuration
 param fabricConfig = {
   skuName: 'F2'
-  adminUsers: ['admin@email.com']
+  adminUsers: ['admin@datagovcompany.com']
 }
 
 // Databricks configuration
@@ -30,14 +29,18 @@ param databricksConfig = {
 // Storage configuration
 param storageConfig = {
   skuName: 'Standard_LRS'
-  containers: ['bronze'
-  'silver'
-  'gold']
+  containers: [
+    'staging'
+    'bronze'
+    'silver'
+    'gold'
+    'ehcapture'
+  ]
 }
 
 // PostgreSQL configuration
 param postgresConfig = {
-  version: '17'
+  version: '16'
   storageSizeGB: 64
   geoRedundantBackup: 'Disabled'
   autoGrow: 'Enabled'
@@ -50,8 +53,8 @@ param postgresConfig = {
   // New approach with Object IDs (recommended)
   azureAdAdministrators: [
     {
-      objectId: '00000000-0000-0000-0000-000000000000' // Replace with the actual Azure AD Object ID
-      principalName: 'admin@email.com'
+      objectId: '777777777-bbbb-4444-bbbb-6666666666' // Replace with the actual Azure AD Object ID
+      principalName: 'admin@datagovcompany.com'
       principalType: 'User'
     }
   ]
@@ -61,18 +64,30 @@ param postgresConfig = {
 param eventHubConfig = {
   skuName: 'Standard'
   capacity: 1
-  topicName: 'data-governance-events'
+  topicName: 'market-data'
   partitionCount: 2
-  messageRetentionInDays: 7
+  messageRetentionInDays: 1
+  consumerGroups: [
+    'raw-loader'
+    'analytics'
+    'replay'
+  ]
+  captureEnabled: true
+  captureIntervalInSeconds: 300
+  captureSizeLimitInBytes: 314572800
+  captureEncoding: 'Avro'
+  captureArchiveNameFormat: '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+  captureContainerName: 'ehcapture'
 }
 
 // Tags configuration
 param tagsConfig = {
-  environment: 'prod'
+  environment: 'Demo'
   project: 'DataGovernance'
-  'azd-env-name': 'wkpdg'
+  'azd-env-name': 'wkpdgfsi'
   additionalTags: {
     owner: 'DataTeam'
     costCenter: 'DataPlatform'
+
   }
 }
